@@ -1,0 +1,4 @@
+github coalang-soft coalib-java
+dir-create ./subos-io-java/standalone-src
+dir-copy ./subos-io-java/src ./subos-io-java/standalone-src
+dir-copy ./coalib-java/src ./subos-io-java/standalone-src
