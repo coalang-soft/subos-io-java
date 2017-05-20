@@ -13,7 +13,7 @@ public class IoTest {
 	public static void main(String[] args) throws IOException {
 		file("test.html")
 				.downloadFrom(
-						buffer().writeString("Begin")
+						buffer().writeString("abc")
 						.downloadFrom(
 							url("https://www.google.com")
 						)

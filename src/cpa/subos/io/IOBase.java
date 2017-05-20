@@ -11,6 +11,10 @@ public interface IOBase<T extends IOBase<T>> {
 	InputStream reader() throws IOException;
 	OutputStream writer() throws IOException;
 	T writeString(String s) throws IOException;
+	T writeString(String s, String charset) throws IOException;
 	String buildString() throws IOException;
+	String buildString(String charset) throws IOException;
+	void write(int i) throws IOException;
+	int read() throws IOException;
 	
 }

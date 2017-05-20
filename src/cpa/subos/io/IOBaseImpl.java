@@ -40,18 +40,38 @@ public abstract class IOBaseImpl<T extends IOBaseImpl<T>> implements IOBase<T>{
 	}
 	
 	@SuppressWarnings("unchecked")
-	public T writeString(String s) throws IOException{
+	public T writeString(String s, String charset) throws IOException{
 		OutputStream out = writer();
-		for(int i = 0; i < s.length(); i++){
-			out.write(s.charAt(i));
-		}
+		out.write(s.getBytes(charset));
 		out.close();
 		return (T) this;
 	}
 
+	public T writeString(String s) throws IOException {
+		return writeString(s,"ASCII");
+	}
+
 	public String buildString() throws IOException {
-		int[] vals = stream();
-		return new String(vals,0,vals.length);
+		return buildString("ASCII");
+	}
+	public String buildString(String charset) throws IOException {
+		return new String(bytes(stream()), charset);
+	}
+
+	private byte[] bytes(int[] stream) {
+		byte[] b = new byte[stream.length];
+		for(int i = 0; i < b.length; i++){
+			b[i]=(byte)stream[i];
+		}
+		return b;
+	}
+
+	public int read() throws IOException {
+		return reader().read();
+	}
+
+	public void write(int i) throws IOException {
+		writer().write(i);
 	}
 
 }
