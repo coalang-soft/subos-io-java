@@ -8,10 +8,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.util.ArrayList;
 
 import cpa.subos.io.IOBaseImpl;
+import io.github.coalangsoft.lib.data.Func;
+import io.github.coalangsoft.lib.log.Logger;
+import io.github.coalangsoft.lib.sequence.basic.BasicSequence;
 
-public class FileIOBase extends IOBaseImpl<FileIOBase>{
+public class FileIOBase extends IOBaseImpl<FileIOBase> implements Directory{
 
 	private File file;
 
@@ -44,7 +50,7 @@ public class FileIOBase extends IOBaseImpl<FileIOBase>{
 	}
 
 	public Directory getParent(){
-		return new DirectoryImpl(file.getParentFile());
+		return new FileIOBase(file.getParentFile());
 	}
 
 	public FileIOBase createFile() throws IOException {
@@ -54,6 +60,85 @@ public class FileIOBase extends IOBaseImpl<FileIOBase>{
 
 	public String getPath(){
 		return file.getPath();
+	}
+
+	public BasicSequence<FileIOBase> listFiles() {
+		File[] list = file.listFiles();
+		FileIOBase[] wrap = new FileIOBase[list.length];
+		for(int i = 0; i < list.length; i++){
+			wrap[i] = new FileIOBase(list[i]);
+		}
+		return new BasicSequence<FileIOBase>(FileIOBase.class, wrap);
+	}
+
+	public BasicSequence<FileIOBase> listFilesDeep() {
+		final ArrayList<FileIOBase> files = new ArrayList<FileIOBase>();
+		listFiles().forEach(new Func<FileIOBase, Void>() {
+			public Void call(FileIOBase p) {
+				if(p.file.isFile()){
+					files.add(p);
+				}else if(p.file.isDirectory()){
+					files.addAll(
+							new FileIOBase(p.file).listFilesDeep().asList()
+					);
+				}
+				return null;
+			}
+		});
+		return new BasicSequence<FileIOBase>(FileIOBase.class, files.toArray(new FileIOBase[0]));
+	}
+
+	@Override
+	public FileIOBase createDirectory() {
+		file.mkdirs();
+		return this;
+	}
+
+	public void copy(FileIOBase dest) throws IOException {
+		copy0(file, dest.file);
+	}
+
+	private static void copy0(File src, File dest)
+			throws IOException{
+
+		if(src.isDirectory()){
+
+			//if directory not exists, create it
+			if(!dest.exists()){
+				dest.mkdir();
+				System.out.println("Directory copied from "
+						+ src + "  to " + dest);
+			}
+
+			//list all the directory contents
+			String files[] = src.list();
+
+			for (String file : files) {
+				//construct the src and dest file structure
+				File srcFile = new File(src, file);
+				File destFile = new File(dest, file);
+				//recursive copy
+				copy0(srcFile,destFile);
+			}
+
+		}else{
+			//if file, then copy it
+			//Use bytes stream to support all file types
+			InputStream in = new FileInputStream(src);
+			OutputStream out = new FileOutputStream(dest);
+
+			byte[] buffer = new byte[1024];
+
+			int length;
+			//copy the file content in bytes
+			while ((length = in.read(buffer)) > 0){
+				out.write(buffer, 0, length);
+			}
+
+			in.close();
+			out.close();
+			System.out.println("File copied from " + src + " to " + dest);
+		}
 	}
 
 }

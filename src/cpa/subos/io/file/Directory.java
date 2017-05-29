@@ -6,8 +6,8 @@ import io.github.coalangsoft.lib.sequence.basic.BasicSequence;
 
 public interface Directory {
 
-	public BasicSequence<File> listFiles();
-	public BasicSequence<File> listFilesDeep();
+	public BasicSequence<FileIOBase> listFiles();
+	public BasicSequence<FileIOBase> listFilesDeep();
 	public Directory createDirectory();
 
 }
