@@ -35,7 +35,6 @@ public abstract class IOBaseImpl<T extends IOBaseImpl<T>> implements IOBase<T>{
 		}
 		
 		in.close();
-		out.close();
 		return (T) this;
 	}
 	

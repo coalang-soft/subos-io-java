@@ -6,7 +6,7 @@ import io.github.coalangsoft.lib.data.Func;
 import io.github.coalangsoft.lib.sequence.AbstractSequence;
 import io.github.coalangsoft.lib.sequence.basic.BasicSequence;
 
-public class FileExtensionFilter implements Func<File, Boolean>{
+public class FileExtensionFilter implements Func<FileIOBase, Boolean>{
 
 	private AbstractSequence<String, ?> sequence;
 
@@ -18,8 +18,8 @@ public class FileExtensionFilter implements Func<File, Boolean>{
 		this(new BasicSequence<String>(String.class, extensions));
 	}
 	
-	public Boolean call(File p) {
-		String[] split = p.getAbsolutePath().split("\\.");
+	public Boolean call(FileIOBase p) {
+		String[] split = p.getPath().split("\\.");
 		return sequence.contains(split[split.length - 1]);
 	}
 

@@ -64,6 +64,9 @@ public class FileIOBase extends IOBaseImpl<FileIOBase> implements Directory{
 
 	public BasicSequence<FileIOBase> listFiles() {
 		File[] list = file.listFiles();
+		if(list == null){
+			return new BasicSequence<FileIOBase>(FileIOBase.class);
+		}
 		FileIOBase[] wrap = new FileIOBase[list.length];
 		for(int i = 0; i < list.length; i++){
 			wrap[i] = new FileIOBase(list[i]);
@@ -139,6 +142,14 @@ public class FileIOBase extends IOBaseImpl<FileIOBase> implements Directory{
 			out.close();
 			System.out.println("File copied from " + src + " to " + dest);
 		}
+	}
+
+	public boolean isFile(){
+		return file.isFile();
+	}
+
+	public boolean isDirectory(){
+		return file.isDirectory();
 	}
 
 }
