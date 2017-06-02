@@ -59,7 +59,20 @@ public class FileIOBase extends IOBaseImpl<FileIOBase> implements Directory{
 	}
 
 	public String getPath(){
-		return file.getPath();
+		return file.getAbsolutePath();
+	}
+
+	public void remove(){
+		if(isDirectory()) {
+			listFiles().forEach(new Func<FileIOBase, Void>() {
+				@Override
+				public Void call(FileIOBase fileIOBase) {
+					fileIOBase.remove();
+					return null;
+				}
+			});
+		}
+		file.delete();
 	}
 
 	public BasicSequence<FileIOBase> listFiles() {
