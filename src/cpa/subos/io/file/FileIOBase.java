@@ -165,4 +165,8 @@ public class FileIOBase extends IOBaseImpl<FileIOBase> implements Directory{
 		return file.isDirectory();
 	}
 
+	public FileIOBase child(String name){
+		return new FileIOBase(new File(file, name));
+	}
+
 }
