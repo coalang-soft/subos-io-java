@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 import cpa.subos.io.IOBaseImpl;
 import io.github.coalangsoft.lib.data.Func;
-import io.github.coalangsoft.lib.log.Logger;
+import io.github.coalangsoft.lib.log.TimeLogger;
 import io.github.coalangsoft.lib.sequence.basic.BasicSequence;
 
 public class FileIOBase extends IOBaseImpl<FileIOBase> implements Directory{
@@ -49,7 +49,7 @@ public class FileIOBase extends IOBaseImpl<FileIOBase> implements Directory{
 		return file.getParent() != null;
 	}
 
-	public Directory getParent(){
+	public FileIOBase getParent(){
 		return new FileIOBase(file.getParentFile());
 	}
 
