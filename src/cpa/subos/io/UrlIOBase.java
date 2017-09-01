@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.net.URLConnection;
 
 public class UrlIOBase extends IOBaseImpl<UrlIOBase> {
 
@@ -13,8 +14,11 @@ public class UrlIOBase extends IOBaseImpl<UrlIOBase> {
 		@Override
 		public Object call(URL url) {
 			try {
-				return url.openStream();
+				URLConnection c = url.openConnection();
+				c.setDoInput(true);
+				return c.getInputStream();
 			} catch (IOException e) {
+				e.printStackTrace();
 				return e;
 			}
 		}
