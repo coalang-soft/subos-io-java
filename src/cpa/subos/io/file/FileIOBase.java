@@ -169,4 +169,8 @@ public class FileIOBase extends IOBaseImpl<FileIOBase> implements Directory{
 		return new FileIOBase(new File(file, name));
 	}
 
+	public String toString(){
+		return file.getAbsolutePath();
+	}
+
 }

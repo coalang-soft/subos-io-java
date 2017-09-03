@@ -43,4 +43,8 @@ public class UrlIOBase extends IOBaseImpl<UrlIOBase> {
 		throw new UnsupportedOperationException("Unable to write to URL");
 	}
 
+	public String toString(){
+		return url.toExternalForm();
+	}
+
 }
