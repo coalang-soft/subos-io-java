@@ -1,7 +1,5 @@
 package cpa.subos.io.file;
 
-import java.io.File;
-
 import io.github.coalangsoft.lib.sequence.basic.BasicSequence;
 
 public interface Directory {

@@ -24,6 +24,13 @@ public class UrlIOBase extends IOBaseImpl<UrlIOBase> {
 		}
 	};
 
+	public static void setReaderFactory(Func<URL, Object> f){
+		readerFactory = f;
+	}
+	public static Func<URL, Object> getReaderFactory(){
+		return readerFactory;
+	}
+	
 	private URL url;
 
 	public UrlIOBase(URL url){

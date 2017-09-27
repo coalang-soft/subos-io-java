@@ -9,5 +9,9 @@ public interface FileFilters {
 	FileExtensionFilter AUDIO = new FileExtensionFilter(
 		"mp3","wav","midi"
 	);
+
+	FileExtensionFilter VIDEO = new FileExtensionFilter(
+		"mp4"
+	);
 	
 }

@@ -11,13 +11,17 @@ import java.net.MalformedURLException;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.List;
 
 import cpa.subos.io.IOBaseImpl;
 import io.github.coalangsoft.lib.data.Func;
 import io.github.coalangsoft.lib.log.TimeLogger;
+import io.github.coalangsoft.lib.pattern.AbstractMatcher;
+import io.github.coalangsoft.lib.sequence.ISequence;
+import io.github.coalangsoft.lib.sequence.basic.BasicModifiableSequence;
 import io.github.coalangsoft.lib.sequence.basic.BasicSequence;
 
-public class FileIOBase extends IOBaseImpl<FileIOBase> implements Directory{
+public class FileIOBase extends IOBaseImpl<FileIOBase> implements Directory, ISequence<FileIOBase, BasicSequence<FileIOBase>>{
 
 	private File file;
 
@@ -173,4 +177,106 @@ public class FileIOBase extends IOBaseImpl<FileIOBase> implements Directory{
 		return file.getAbsolutePath();
 	}
 
+	@Override
+	public BasicSequence<FileIOBase> filter(Func<FileIOBase, Boolean> condition) {
+		return listFilesDeep().filter(condition);
+	}
+
+	@Override
+	public BasicSequence<FileIOBase> clone() {
+		return listFilesDeep().clone();
+	}
+
+	@Override
+	public FileIOBase[] toArray() {
+		return listFilesDeep().toArray();
+	}
+
+	@Override
+	public BasicSequence<FileIOBase> subSequence(int start, int end) {
+		return listFilesDeep().subSequence(start,end);
+	}
+
+	@Override
+	public BasicSequence<FileIOBase> subSequence(int start) {
+		return listFilesDeep().subSequence(start);
+	}
+
+	@Override
+	public FileIOBase[] getRaw() {
+		return listFilesDeep().getRaw();
+	}
+
+	@Override
+	public FileIOBase at(int index) {
+		return listFilesDeep().at(0);
+	}
+
+	@Override
+	public FileIOBase atOrDefault(int index, FileIOBase defaultValue) {
+		return listFilesDeep().atOrDefault(index,defaultValue);
+	}
+
+	@Override
+	public int length() {
+		return listFilesDeep().length();
+	}
+
+	@Override
+	public AbstractMatcher<FileIOBase> matcher(FileIOBase... toTest) {
+		return listFilesDeep().matcher(toTest);
+	}
+
+	@Override
+	public AbstractMatcher<FileIOBase> matcher(ISequence<FileIOBase, ?> toTest) {
+		return listFilesDeep().matcher(toTest);
+	}
+
+	@Override
+	public boolean contains(Object value) {
+		return listFilesDeep().contains(value);
+	}
+
+	@Override
+	public List<FileIOBase> asList() {
+		return listFilesDeep().asList();
+	}
+
+	@Override
+	public void forEach(Func<FileIOBase, ?> f) {
+		listFilesDeep().forEach(f);
+	}
+
+	@Override
+	public <R> BasicModifiableSequence<R> forEach(Func<FileIOBase, R> f, Class<R> c) {
+		return listFilesDeep().forEach(f,c);
+	}
+
+	@Override
+	public BasicSequence<FileIOBase> sort() {
+		return listFilesDeep().sort();
+	}
+
+	@Override
+	public FileIOBase first(Func<FileIOBase, Boolean> rule) {
+		return listFilesDeep().first(rule);
+	}
+	
+	public static BasicSequence<FileIOBase> roots(){
+		File[] rs = File.listRoots();
+		FileIOBase[] r = new FileIOBase[rs.length];
+		for(int i = 0; i < r.length; i++){
+			r[i] = new FileIOBase(rs[i]);
+		}
+		return new BasicSequence<>(FileIOBase.class, r);
+	}
+	
+	public long space(){
+		return file.getFreeSpace();
+	}
+
+	@Override
+	public BasicSequence<FileIOBase> sort(Func<FileIOBase, Integer> f) {
+		return listFiles().sort(f);
+	}
 }
