@@ -272,11 +272,11 @@ public class FileIOBase extends IOBaseImpl<FileIOBase> implements Directory, ISe
 	}
 	
 	public long space(){
-		return file.getFreeSpace();
+		return file.getUsableSpace();
 	}
 
 	@Override
-	public BasicSequence<FileIOBase> sort(Func<FileIOBase, Integer> f) {
+	public BasicSequence<FileIOBase> sort(Func<FileIOBase, Long> f) {
 		return listFiles().sort(f);
 	}
 }

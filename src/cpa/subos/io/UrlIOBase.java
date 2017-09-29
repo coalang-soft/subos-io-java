@@ -18,7 +18,6 @@ public class UrlIOBase extends IOBaseImpl<UrlIOBase> {
 				c.setDoInput(true);
 				return c.getInputStream();
 			} catch (IOException e) {
-				e.printStackTrace();
 				return e;
 			}
 		}
