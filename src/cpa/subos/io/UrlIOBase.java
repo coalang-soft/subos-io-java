@@ -10,12 +10,12 @@ import java.net.URLConnection;
 
 public class UrlIOBase extends IOBaseImpl<UrlIOBase> {
 
-	private static Func<URL, Object> readerFactory = new Func<URL, Object>() {
+	private URLConnection connection;
+
+	private static Func<URLConnection, Object> readerFactory = new Func<URLConnection, Object>() {
 		@Override
-		public Object call(URL url) {
+		public Object call(URLConnection c) {
 			try {
-				URLConnection c = url.openConnection();
-				c.setDoInput(true);
 				return c.getInputStream();
 			} catch (IOException e) {
 				return e;
@@ -23,10 +23,10 @@ public class UrlIOBase extends IOBaseImpl<UrlIOBase> {
 		}
 	};
 
-	public static void setReaderFactory(Func<URL, Object> f){
+	public static void setReaderFactory(Func<URLConnection, Object> f){
 		readerFactory = f;
 	}
-	public static Func<URL, Object> getReaderFactory(){
+	public static Func<URLConnection, Object> getReaderFactory(){
 		return readerFactory;
 	}
 	
@@ -37,7 +37,8 @@ public class UrlIOBase extends IOBaseImpl<UrlIOBase> {
 	}
 	
 	public InputStream reader() throws IOException {
-		Object res = readerFactory.call(url);
+		initConnection();
+		Object res = readerFactory.call(connection);
 		if(res instanceof InputStream){
 			return (InputStream) res;
 		}else{
@@ -46,11 +47,20 @@ public class UrlIOBase extends IOBaseImpl<UrlIOBase> {
 	}
 
 	public OutputStream writer() throws IOException {
-		throw new UnsupportedOperationException("Unable to write to URL");
+		initConnection();
+		return connection.getOutputStream();
 	}
 
 	public String toString(){
 		return url.toExternalForm();
+	}
+
+	private void initConnection() throws IOException {
+		if(connection == null){
+			connection = url.openConnection();
+			connection.setDoInput(true);
+			connection.setDoOutput(true);
+		}
 	}
 
 }

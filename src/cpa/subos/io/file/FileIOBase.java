@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import cpa.subos.io.IOBaseImpl;
@@ -93,18 +94,7 @@ public class FileIOBase extends IOBaseImpl<FileIOBase> implements Directory, ISe
 
 	public BasicSequence<FileIOBase> listFilesDeep() {
 		final ArrayList<FileIOBase> files = new ArrayList<FileIOBase>();
-		listFiles().forEach(new Func<FileIOBase, Void>() {
-			public Void call(FileIOBase p) {
-				if(p.file.isFile()){
-					files.add(p);
-				}else if(p.file.isDirectory()){
-					files.addAll(
-							new FileIOBase(p.file).listFilesDeep().asList()
-					);
-				}
-				return null;
-			}
-		});
+		forEach((f) -> {files.add(f); return null;});
 		return new BasicSequence<FileIOBase>(FileIOBase.class, files.toArray(new FileIOBase[0]));
 	}
 
@@ -179,7 +169,9 @@ public class FileIOBase extends IOBaseImpl<FileIOBase> implements Directory, ISe
 
 	@Override
 	public BasicSequence<FileIOBase> filter(Func<FileIOBase, Boolean> condition) {
-		return listFilesDeep().filter(condition);
+		ArrayList<FileIOBase> list = new ArrayList<>();
+		forEach(condition, list::add);
+		return new BasicSequence<FileIOBase>(FileIOBase.class, list.toArray(new FileIOBase[0]));
 	}
 
 	@Override
@@ -213,11 +205,6 @@ public class FileIOBase extends IOBaseImpl<FileIOBase> implements Directory, ISe
 	}
 
 	@Override
-	public FileIOBase atOrDefault(int index, FileIOBase defaultValue) {
-		return listFilesDeep().atOrDefault(index,defaultValue);
-	}
-
-	@Override
 	public int length() {
 		return listFilesDeep().length();
 	}
@@ -244,7 +231,14 @@ public class FileIOBase extends IOBaseImpl<FileIOBase> implements Directory, ISe
 
 	@Override
 	public void forEach(Func<FileIOBase, ?> f) {
-		listFilesDeep().forEach(f);
+		listFiles().forEach((p) -> {
+			if(p.file.isFile()){
+				f.call(p);
+			}else if(p.file.isDirectory()){
+				new FileIOBase(p.file).forEach(f);
+			}
+			return null;
+		});
 	}
 
 	@Override
@@ -261,7 +255,7 @@ public class FileIOBase extends IOBaseImpl<FileIOBase> implements Directory, ISe
 	public FileIOBase first(Func<FileIOBase, Boolean> rule) {
 		return listFilesDeep().first(rule);
 	}
-	
+
 	public static BasicSequence<FileIOBase> roots(){
 		File[] rs = File.listRoots();
 		FileIOBase[] r = new FileIOBase[rs.length];
@@ -277,6 +271,11 @@ public class FileIOBase extends IOBaseImpl<FileIOBase> implements Directory, ISe
 
 	@Override
 	public BasicSequence<FileIOBase> sort(Func<FileIOBase, Long> f) {
-		return listFiles().sort(f);
+		return listFilesDeep().sort(f);
+	}
+
+	@Override
+	public Iterator<FileIOBase> iterator() {
+		return listFilesDeep().iterator();
 	}
 }

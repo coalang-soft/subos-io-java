@@ -18,14 +18,8 @@ public class IoTest {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {
-		BasicSequence<?> s = FileIOBase.roots();
-		s.forEach((f) -> {
+		FileIOBase.roots().at(0).forEach((f) -> {
 			System.out.println(f);
-			return null;
-		});
-		FileIOBase.roots().sort((f) -> f.space()).forEach((f) -> {
-			System.out.println(f + " " + f.space());
-			return null;
 		});
 	}
 
